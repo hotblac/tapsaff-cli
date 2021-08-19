@@ -1,18 +1,20 @@
-#!/usr/bin/env node
-
 const inquirer = require('inquirer');
+const { welcome, tapsAff } = require('./tapsaffbot');
 
 const city = process.argv[2];
 if (city) {
-    console.log( `There is weather in %s`, city );
+    const response = tapsAff(city);
+    console.log(response);
 } else {
+    const welcomeText = welcome();
     const prompt = [{
             type: 'input',
             name: 'city',
-            message: "What city are you in?",
+            message: welcomeText,
         }];
     inquirer.prompt(prompt).then(answers => {
-        console.log(`There is weather in ${answers['city']}!`)
+        const response = tapsAff(answers.city);
+        console.log(response);
     })
 }
 
