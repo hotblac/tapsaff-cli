@@ -1,0 +1,19 @@
+{
+  "name": "tapsaff-cli",
+  "version": "1.0.0",
+  "description": "Tapsaff bot CLI",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hotblac/tapsaff-cli.git"
+  },
+  "author": "Stuart 'Stevie' Leitch",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hotblac/tapsaff-cli/issues"
+  },
+  "homepage": "https://github.com/hotblac/tapsaff-cli#readme"
+}
