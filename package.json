@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/hotblac/tapsaff-cli/issues"
   },
-  "homepage": "https://github.com/hotblac/tapsaff-cli#readme"
+  "homepage": "https://github.com/hotblac/tapsaff-cli#readme",
+  "dependencies": {
+    "inquirer": "^8.1.2"
+  }
 }
