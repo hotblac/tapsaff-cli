@@ -21,7 +21,9 @@
   "homepage": "https://github.com/hotblac/tapsaff-cli#readme",
   "dependencies": {
     "crypto": "^1.0.1",
+    "dotenv": "^10.0.0",
     "inquirer": "^8.1.2",
+    "node-fetch": "^2.6.1",
     "util": "^0.12.4"
   }
 }
