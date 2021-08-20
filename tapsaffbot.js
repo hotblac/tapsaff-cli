@@ -9,7 +9,7 @@ module.exports = {
     tapsAff: (city, action) => {
         startConversation()
             .then(conversation => {
-                receiveMessages(conversation, action)
+                receiveMessages(conversation, activity => action(activity.text));
                 sendMessage(conversation, city);
             });
     }
