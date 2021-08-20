@@ -1,6 +1,5 @@
 const { randomBytes } = require('crypto');
 const fetch = require('node-fetch');
-const { WebSocket } = require('ws');
 
 const DIRECT_LINE_URL = 'https://directline.botframework.com';
 const { DIRECT_LINE_SECRET } = process.env;
@@ -53,7 +52,10 @@ module.exports = {
             method: 'POST'
         });
 
-        if (response.status !== 200) {
+        if (response.status === 200) {
+            const responseBody = await response.json();
+            return responseBody.id;
+        } else {
             throw new Error(`Direct Line service returned ${ response.status } while sending an activity`);
         }
 
@@ -67,15 +69,7 @@ module.exports = {
      * @see https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-connector-api-reference?view=azure-bot-service-4.0#activity-object Activity object
      */
     receiveMessages: async(conversation, handler) => {
-        const ws = new WebSocket(conversation.streamUrl);
-        ws.onmessage = message => {
-            if (message.data) {
-                const activitySet = JSON.parse(message.data);
-                // Ignore activities from userId. They're outgoing messages.
-                activitySet.activities.forEach(activity => activity.from.id !== conversation.userId && handler(activity));
-            }
-        };
-        ws.on('error', error => console.log(error));
+        // TODO
     }
 
 }
