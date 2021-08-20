@@ -62,48 +62,24 @@ module.exports = {
     },
 
     getWelcome: async(conversation) => {
-        const response = await fetch(`${ DIRECT_LINE_URL }/v3/directline/conversations/${ conversation.conversationId }/activities
-`, {
-            headers: {
-                authorization: `Bearer ${ conversation.token }`
-            },
-            method: 'GET'
-        });
-
-        if (response.status === 200) {
-            const responseBody = await response.json();
-            const welcome = responseBody.activities.find(activity => activity.from !== conversation.userId);
-            if (welcome) {
-                return welcome.text;
-            } else {
-                // TODO: wait until the welcome is received
-                throw new Error(`Could not find welcome`);
-            }
+        const activities = await getActivities(conversation);
+        const welcome = activities.find(activity => activity.from !== conversation.userId);
+        if (welcome) {
+            return welcome.text;
         } else {
-            throw new Error(`Direct Line service returned ${ response.status } while receiving responses`);
+            // TODO: wait until the welcome is received
+            throw new Error(`Could not find welcome`);
         }
     },
 
     getReply: async(conversation, replyToId) => {
-        const response = await fetch(`${ DIRECT_LINE_URL }/v3/directline/conversations/${ conversation.conversationId }/activities
-`, {
-            headers: {
-                authorization: `Bearer ${ conversation.token }`
-            },
-            method: 'GET'
-        });
-
-        if (response.status === 200) {
-            const responseBody = await response.json();
-            const reply = responseBody.activities.find(activity => activity.replyToId === replyToId);
-            if (reply) {
-                return reply.text;
-            } else {
-                // TODO: wait until the reply is received
-                throw new Error(`Could not find reply to activity ${ replyToId }`);
-            }
+        const activities = await getActivities(conversation);
+        const reply = activities.find(activity => activity.replyToId === replyToId);
+        if (reply) {
+            return reply.text;
         } else {
-            throw new Error(`Direct Line service returned ${ response.status } while receiving responses`);
+            // TODO: wait until the reply is received
+            throw new Error(`Could not find reply to activity ${ replyToId }`);
         }
     }
 
@@ -112,4 +88,21 @@ module.exports = {
 function createUserId() {
     const buffer = randomBytes(16);
     return `dl_${ buffer.toString('hex') }`;
+}
+
+async function getActivities(conversation) {
+    const response = await fetch(`${ DIRECT_LINE_URL }/v3/directline/conversations/${ conversation.conversationId }/activities
+`, {
+        headers: {
+            authorization: `Bearer ${ conversation.token }`
+        },
+        method: 'GET'
+    });
+
+    if (response.status === 200) {
+        const responseBody = await response.json();
+        return responseBody.activities;
+    } else {
+        throw new Error(`Direct Line service returned ${ response.status } while receiving responses`);
+    }
 }
