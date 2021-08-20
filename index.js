@@ -8,14 +8,15 @@ const city = process.argv[2];
 if (city) {
     tapsAff(city, response => console.log(response));
 } else {
-    const welcomeText = welcome();
-    const prompt = [{
+    welcome().then(welcomeText => {
+        const prompt = [{
             type: 'input',
             name: 'city',
             message: welcomeText,
         }];
-    inquirer.prompt(prompt).then(answers => {
-        tapsAff(answers.city, response => console.log(response));
-    })
+        inquirer.prompt(prompt).then(answers => {
+            tapsAff(answers.city, response => console.log(response));
+        })
+    });
 }
 

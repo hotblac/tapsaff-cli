@@ -61,6 +61,29 @@ module.exports = {
 
     },
 
+    getWelcome: async(conversation) => {
+        const response = await fetch(`${ DIRECT_LINE_URL }/v3/directline/conversations/${ conversation.conversationId }/activities
+`, {
+            headers: {
+                authorization: `Bearer ${ conversation.token }`
+            },
+            method: 'GET'
+        });
+
+        if (response.status === 200) {
+            const responseBody = await response.json();
+            const welcome = responseBody.activities.find(activity => activity.from !== conversation.userId);
+            if (welcome) {
+                return welcome.text;
+            } else {
+                // TODO: wait until the welcome is received
+                throw new Error(`Could not find welcome`);
+            }
+        } else {
+            throw new Error(`Direct Line service returned ${ response.status } while receiving responses`);
+        }
+    },
+
     getReply: async(conversation, replyToId) => {
         const response = await fetch(`${ DIRECT_LINE_URL }/v3/directline/conversations/${ conversation.conversationId }/activities
 `, {
