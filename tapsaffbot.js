@@ -1,4 +1,4 @@
-const { startConversation } = require('./directlinev3')
+const { startConversation, receiveMessages, sendMessage} = require('./directlinev3')
 
 module.exports = {
 
@@ -8,6 +8,9 @@ module.exports = {
 
     tapsAff: (city, action) => {
         startConversation()
-            .then(conversation => action(conversation.conversationId)); // TODO: Use the conversationId to find messages
+            .then(conversation => {
+                receiveMessages(conversation, action)
+                sendMessage(conversation, city);
+            });
     }
 }
