@@ -46,7 +46,7 @@ module.exports = {
 `, {
             body: JSON.stringify({ type: 'message', from: {id: conversation.userId}, text: message}),
             headers: {
-                authorization: `Bearer ${ DIRECT_LINE_SECRET }`,
+                authorization: `Bearer ${ conversation.token }`,
                 'Content-Type': 'application/json'
             },
             method: 'POST'
@@ -61,15 +61,27 @@ module.exports = {
 
     },
 
-    /**
-     * Receive messages the conversation
-     * @param conversation to listen to
-     * @param handler for the next Activity in the conversation
-     * @returns {Promise<void>}
-     * @see https://docs.microsoft.com/en-us/azure/bot-service/rest-api/bot-framework-rest-connector-api-reference?view=azure-bot-service-4.0#activity-object Activity object
-     */
-    receiveMessages: async(conversation, handler) => {
-        // TODO
+    getReply: async(conversation, replyToId) => {
+        const response = await fetch(`${ DIRECT_LINE_URL }/v3/directline/conversations/${ conversation.conversationId }/activities
+`, {
+            headers: {
+                authorization: `Bearer ${ conversation.token }`
+            },
+            method: 'GET'
+        });
+
+        if (response.status === 200) {
+            const responseBody = await response.json();
+            const reply = responseBody.activities.find(activity => activity.replyToId === replyToId);
+            if (reply) {
+                return reply.text;
+            } else {
+                // TODO: wait until the reply is received
+                throw new Error(`Could not find reply to activity ${ replyToId }`);
+            }
+        } else {
+            throw new Error(`Direct Line service returned ${ response.status } while receiving responses`);
+        }
     }
 
 }
